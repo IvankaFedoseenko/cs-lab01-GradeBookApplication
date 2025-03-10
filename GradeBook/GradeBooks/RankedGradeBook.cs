@@ -16,43 +16,40 @@ namespace GradeBook.GradeBooks
         }
         public override char GetLetterGrade(double averageGrade)
         {
-            foreach (var student in Students)
-            {
-                int countStudents = 0;
-                if(student != null)
-                {
-                    countStudents++;
-                }
-                double topStudents = 1;
-                if(student.AverageGrade > averageGrade)
-                {
-                    topStudents = student.AverageGrade;
-                }
-                else
-                {
-                    topStudents++;
-                }
-                if(topStudents <= countStudents * 20 / 100)
-                {
-                    return 'A';
-                }
-                if(topStudents <= countStudents * 40 / 100)
-                {
-                    return 'B';
-                }
-                if (topStudents <= countStudents * 60 / 100)
-                {
-                    return 'C';
-                }
-                if (topStudents <= countStudents * 80 / 100)
-                {
-                    return 'D';
-                }
-                else
-                {
-                    return 'F';
-                }
 
+            if (Students.Count < 5)
+            {
+                throw new InvalidOperationException("Ranked grading requires at least 5 students.");
+            }
+            var sortedGrades = Students.OrderByDescending(s => s.AverageGrade).ToList();
+            int studentPlace = 1;
+            foreach( var student in sortedGrades)
+            {
+               if (averageGrade < student.AverageGrade)
+                {
+                    studentPlace++;
+                }
+            }
+            double studentPercentage = studentPlace * 100 / (sortedGrades.Count + 1);
+            if (studentPercentage <= 20)
+            {
+                return 'A';
+            }
+            else if (studentPercentage <= 40)
+            {
+                return 'B';
+            }
+            else if (studentPercentage <= 60)
+            {
+                return 'C';
+            }
+            else if (studentPercentage <= 80)
+            {
+                return 'D';
+            }
+            else
+            {
+                return 'F';
             }
         }
     }
